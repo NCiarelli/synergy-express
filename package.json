@@ -1,0 +1,33 @@
+{
+  "name": "synergy-express",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "ibm-watson": "^5.2.0",
+    "pg": "^7.14.0"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NCiarelli/synergy-express.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NCiarelli/synergy-express/issues"
+  },
+  "homepage": "https://github.com/NCiarelli/synergy-express#readme",
+  "engines": {
+    "node": "12.x"
+  }
+}
