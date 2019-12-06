@@ -1,0 +1,4 @@
+# Don't include node packages
+/node_modules
+# Don't include any personal variable values
+.env
