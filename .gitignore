@@ -2,3 +2,6 @@
 /node_modules
 # Don't include any personal variable values
 .env
+
+# Don't include the saved profile files for testing
+/profile_saves
