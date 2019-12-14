@@ -1,6 +1,7 @@
 // Import reuired modules from other files
 const express = require("express");
 const personalityInsights = require("./watson-api");
+const pool = require("./pg-connection-pool");
 
 // Stuff to save profile to a file
 let fs = require('fs');
