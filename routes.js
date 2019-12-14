@@ -48,6 +48,13 @@ routes.post("/profile", (request, response) => {
 });
 
 
+// START OF DATABASE ROUTES
 
+// Retrieve all employee data from the database
+routes.get("/employees", (req,res) => {
+  pool.query("SELECT * FROM employees ORDER BY id").then(result => {
+    res.json(result.rows);
+  })
+});
 
 module.exports = routes;
