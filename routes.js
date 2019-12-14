@@ -14,12 +14,13 @@ routes.get("/", (req, res) => {
 });
 
 // Generate a new Employee Personaolity Profile
-routes.post("/profile", (req, res) => {
-  // Setup get profile request for Watson
+routes.post("/profile", (request, response) => {
+  // Setup a get profile request for Watson
   let profileParams = {
     // Get the content from the request sent to the server.
-    content: req.body,
+    content: request.body,
     contentType: "application/json",
+    // parameters to have Watson include certain extra data in the profile
     consumptionPreferences: false,
     rawScores: true
   };
@@ -29,7 +30,7 @@ routes.post("/profile", (req, res) => {
     .then(profile => {
       // console.log(JSON.stringify(profile, null, 2));
       // Send the resulting profile back to the Angular App
-      res.json(profile);
+      response.json(profile);
 
       // // Write the profile to a file REMOVE FOR PRODUCTION
       // let jsonData = JSON.stringify(profile);
