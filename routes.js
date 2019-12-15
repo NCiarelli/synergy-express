@@ -50,11 +50,31 @@ routes.post("/profile", (request, response) => {
 
 // START OF DATABASE ROUTES
 
+// GET /employees endpoint
 // Retrieve all employee data from the database
 routes.get("/employees", (req,res) => {
   pool.query("SELECT * FROM employees ORDER BY id").then(result => {
     res.json(result.rows);
-  })
+  });
 });
+
+// GET /employees/:name endpoint
+// Retrieve employee data by name
+routes.get("/employees/:name", (req,res) => {
+  pool.query("SELECT * FROM employees WHERE name=$1::text", [req.params.name]).then((result) => {
+    res.json(result.rows);
+  });
+});
+
+// POST /employees endpoint
+// Add employee to database with the name of the employee in the body of the request
+routes.post("/employees", (req,res) => {
+  pool.query("INSERT INTO employees (name) VALUES ($1::text) RETURNING *", [req.body.name]).then(() => {
+    // Send the copied back resulting database entry with a status code of 201 
+    res.status(201);
+    res.json(result.rows[0]);
+  });
+});
+
 
 module.exports = routes;
