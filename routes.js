@@ -80,7 +80,7 @@ routes.get("/employees/:name", (req, res) => {
 // Add employee to database with the name of the employee in the body of the request
 routes.post("/employees", (req, res) => {
   // Make the SQL statement
-  const sql = "INSERT INTO employees (name) VALUES ($1::TEXT) RETURNING *";
+  const sql = "INSERT INTO employees (name, dominant_personality) VALUES ($1::TEXT, 'None') RETURNING *";
   // Send the SQL query with the paramters
   pool.query(sql, [req.body.name]).then((result) => {
     // Send the copied back resulting database entry with a status code of 201 
@@ -117,4 +117,16 @@ routes.put("/employees/update-all/:id", (req, res) => {
 
 // POST /survey-entries/:employee-id
 // Add a survey entry for an employee
+routes.post("/survey-entries/:employee-id", (req, res) => {
+  // Make the SQL statement
+  const sql = "INSERT INTO survey_entries (employee_id, content, created) VALUES ($1::TEXT, $2::TEXT, $::INT) RETURNING *";
+  // Setup the params to add the new survey entry
+  let params = [req.body.personalityProfile, req.body.dominantPersonality, req.params.id];
+  // Send the SQL query with the paramters
+  pool.query(sql, params).then((result) => {
+    // Send the copied back resulting database entry with a status code of 201 
+    res.status(201);
+    res.json(result.rows[0]);
+  });
+})
 module.exports = routes;
