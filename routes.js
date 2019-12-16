@@ -50,31 +50,71 @@ routes.post("/profile", (request, response) => {
 
 // START OF DATABASE ROUTES
 
+// EMPLOYEE ENDPOINTS
+
 // GET /employees endpoint
 // Retrieve all employee data from the database
-routes.get("/employees", (req,res) => {
-  pool.query("SELECT * FROM employees ORDER BY id").then(result => {
+routes.get("/employees", (req, res) => {
+  // Make the SQL statement
+  const sql = "SELECT * FROM employees ORDER BY id";
+  // Send the SQL query
+  pool.query(sql).then(result => {
+    // Send the result back
     res.json(result.rows);
   });
 });
 
 // GET /employees/:name endpoint
 // Retrieve employee data by name
-routes.get("/employees/:name", (req,res) => {
-  pool.query("SELECT * FROM employees WHERE name=$1::text", [req.params.name]).then((result) => {
+routes.get("/employees/:name", (req, res) => {
+  // Make the SQL statement
+  const sql = "SELECT * FROM employees WHERE name=$1::TEXT";
+  // Send the SQL query with the paramters
+  pool.query(sql, [req.params.name]).then((result) => {
+    // Send the result back
     res.json(result.rows);
   });
 });
 
 // POST /employees endpoint
 // Add employee to database with the name of the employee in the body of the request
-routes.post("/employees", (req,res) => {
-  pool.query("INSERT INTO employees (name) VALUES ($1::text) RETURNING *", [req.body.name]).then(() => {
+routes.post("/employees", (req, res) => {
+  // Make the SQL statement
+  const sql = "INSERT INTO employees (name) VALUES ($1::TEXT) RETURNING *";
+  // Send the SQL query with the paramters
+  pool.query(sql, [req.body.name]).then((result) => {
     // Send the copied back resulting database entry with a status code of 201 
     res.status(201);
     res.json(result.rows[0]);
   });
 });
 
+// PUT /employees/:id/update-all endpoint
+// Update an employees data with all changes
+// routes.put("/employees/update-all/:id", (req, res) => {
+//   pool.query("UPDATE employees SET name=$1::TEXT")
+// });
 
+// PUT /employees/:id/personality-profile
+// Update the personality profile and dominant personality of an employee
+routes.put("/employees/update-all/:id", (req, res) => {
+  // Make the SQL statement
+  const sql = "UPDATE employees SET personality_profile=$1::TEXT, dominant_personality=$2::TEXT WHERE id=$3::INT RETURNING *";
+  // Setup the params to update the  new personality profile and dominant personality, with the targeted employee's id
+  let params = [req.body.personalityProfile, req.body.dominantPersonality, req.params.id];
+  // Send the SQL query with the paramters
+  pool.query(sql, params).then((result) => {
+    // Send the copied back resulting database entry
+    res.json(result.rows[0]);
+  });
+});
+
+
+// SURVEY ENTRIES ENDPOINTS
+
+// GET /survey-entries/:employee-id
+// Get all survey entries associated with an employee by id
+
+// POST /survey-entries/:employee-id
+// Add a survey entry for an employee
 module.exports = routes;
