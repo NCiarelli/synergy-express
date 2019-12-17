@@ -19,5 +19,6 @@ CREATE TABLE teams(
   id SERIAL PRIMARY KEY,
   team_name VARCHAR(40),
   member_ids INT[],
+  team_type VARCHAR(40),
   notes TEXT
 );

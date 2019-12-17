@@ -55,16 +55,16 @@ routes.post("/profile", (request, response) => {
 // GET /employees endpoint
 // Retrieve all employee data from the database
 routes.get("/employees", (req, res) => {
-  // DEBUG
-  console.log("GET /employees endpoint");
-  console.log("Request URL Parameters: ", req.params, "Request Body Data: ", req.body);
+  // // DEBUG
+  // console.log("GET /employees endpoint");
+  // console.log("Request URL Parameters: ", req.params, "Request Body Data: ", req.body);
   // Make the SQL statement
   const sql = "SELECT * FROM employees ORDER BY id;";
   // Send the SQL query
   pool.query(sql).then(result => {
-    // DEBUG
-    console.log("Database Response: ");
-    console.log(result.rows);
+    // // DEBUG
+    // console.log("Database Response: ");
+    // console.log(result.rows);
     // Send the result back
     res.json(result.rows);
   });
@@ -73,16 +73,16 @@ routes.get("/employees", (req, res) => {
 // GET /employees/:name endpoint
 // Retrieve employee data by name
 routes.get("/employees/:name", (req, res) => {
-  // DEBUG
-  console.log("GET /employees/:name endpoint");
-  console.log("Request URL Parameters: ", req.params, "Request Body Data: ", req.body);
+  // // DEBUG
+  // console.log("GET /employees/:name endpoint");
+  // console.log("Request URL Parameters: ", req.params, "Request Body Data: ", req.body);
   // Make the SQL statement
   const sql = "SELECT * FROM employees WHERE name=$1::TEXT;";
   // Send the SQL query with the paramters
   pool.query(sql, [req.params.name]).then((result) => {
-    // DEBUG
-    console.log("Database Response: ");
-    console.log(result.rows);
+    // // DEBUG
+    // console.log("Database Response: ");
+    // console.log(result.rows);
     // Send the result back
     res.json(result.rows);
   });
@@ -91,16 +91,16 @@ routes.get("/employees/:name", (req, res) => {
 // POST /employees endpoint
 // Add employee to database with the name of the employee in the body of the request
 routes.post("/employees", (req, res) => {
-  // DEBUG
-  console.log("POST /employees endpoint");
-  console.log("Request URL Parameters: ", req.params, "Request Body Data: ", req.body);
+  // // DEBUG
+  // console.log("POST /employees endpoint");
+  // console.log("Request URL Parameters: ", req.params, "Request Body Data: ", req.body);
   // Make the SQL statement
   const sql = "INSERT INTO employees (name, dominant_personality) VALUES ($1::TEXT, 'None') RETURNING *;";
   // Send the SQL query with the paramters
   pool.query(sql, [req.body.name]).then((result) => {
-    // DEBUG
-    console.log("Database Response: ");
-    console.log(result.rows);
+    // // DEBUG
+    // console.log("Database Response: ");
+    // console.log(result.rows);
     // Send the copied back resulting database entry with a status code of 201 
     res.status(201);
     res.json(result.rows[0]);
@@ -110,18 +110,40 @@ routes.post("/employees", (req, res) => {
 // PUT /employees/:id/personality-profile endpoint
 // Update the personality profile and dominant personality of an employee
 routes.put("/employees/:id/personality-profile", (req, res) => {
-  // DEBUG
-  console.log("PUT /employees/:id/personality-profile endpoint");
-  console.log("Request URL Parameters: ", req.params, "Request Body Data: ", req.body);
+  // // DEBUG
+  // console.log("PUT /employees/:id/personality-profile endpoint");
+  // console.log("Request URL Parameters: ", req.params, "Request Body Data: ", req.body);
   // Make the SQL statement
   const sql = "UPDATE employees SET personality_profile=$1::TEXT, dominant_personality=$2::TEXT WHERE id=$3::INT RETURNING *;";
   // Setup the params to update the  new personality profile and dominant personality, with the targeted employee's id
   let params = [req.body.personalityProfile, req.body.dominantPersonality, req.params.id];
   // Send the SQL query with the paramters
   pool.query(sql, params).then((result) => {
-    // DEBUG
-    console.log("Database Response: ");
-    console.log(result.rows);
+    // // DEBUG
+    // console.log("Database Response: ");
+    // console.log(result.rows);
+    // Send the copied back resulting database entry
+    res.json(result.rows[0]);
+  });
+});
+
+// PUT /employees/:id/update-all endpoint
+// Update anything in an employee entry
+// MAINLY FOR CUSTOM DATA ENTRY
+routes.put("/employees/:id/update-all", (req, res) => {
+  // // DEBUG
+  // console.log("PUT /employees/:id/update-all endpoint");
+  // console.log("Request URL Parameters: ", req.params, "Request Body Data: ", req.body);
+  // Make the SQL statement
+  const sql = "UPDATE employees SET name=$1::TEXT, dominant_personality=$2::TEXT, personality_profile=$3::TEXT, head_shot_url=$4::TEXT, notes=$5::TEXT WHERE id=$6::INT RETURNING *;";
+  // Setup the params to update the employee database entry, with the targeted employee's id
+  // Must include something for each property used in params, even if empty
+  let params = [req.body.name, req.body.dominantPersonality, req.body.personalityProfile, req.body.headShot, req.body.notes, req.params.id];
+  // Send the SQL query with the paramters
+  pool.query(sql, params).then((result) => {
+    // // DEBUG
+    // console.log("Database Response: ");
+    // console.log(result.rows);
     // Send the copied back resulting database entry
     res.json(result.rows[0]);
   });
@@ -135,18 +157,18 @@ routes.put("/employees/:id/personality-profile", (req, res) => {
 // GET /employees/:id/survey-entries endpoint
 // Get all survey entries associated with an employee by id
 routes.get("/employees/:id/survey-entries", (req, res) => {
-  // DEBUG
-  console.log("GET /employees/:id/survey-entries endpoint");
-  console.log("Request URL Parameters: ", req.params, "Request Body Data: ", req.body);
+  // // DEBUG
+  // console.log("GET /employees/:id/survey-entries endpoint");
+  // console.log("Request URL Parameters: ", req.params, "Request Body Data: ", req.body);
   // Make the SQL statement
   const sql = "SELECT * FROM survey_entries WHERE employee_id=$1 ORDER BY id;";
   // Setup the params to find the entries by the employee id
   let params = [req.params.id];
   // Send the SQL query
   pool.query(sql, params).then(result => {
-    // DEBUG
-    console.log("Database Response: ");
-    console.log(result.rows);
+    // // DEBUG
+    // console.log("Database Response: ");
+    // console.log(result.rows);
     // Send the result back
     res.json(result.rows);
   });
@@ -155,20 +177,20 @@ routes.get("/employees/:id/survey-entries", (req, res) => {
 // POST /employees/:id/survey-entries endpoint
 // Add a survey entry for an employee
 routes.post("/employees/:id/survey-entries", (req, res) => {
-  // DEBUG
-  console.log("POST /employees/:id/survey-entries endpoint");
-  console.log("Request URL Parameters: ", req.params, "Request Body Data: ", req.body);
+  // // DEBUG
+  // console.log("POST /employees/:id/survey-entries endpoint");
+  // console.log("Request URL Parameters: ", req.params, "Request Body Data: ", req.body);
   // Make the SQL statement
   const sql = "INSERT INTO survey_entries (employee_id, content, created) VALUES ($1::INT, $2::TEXT, $3::BIGINT) RETURNING *;";
   // Setup the params to add the new survey entry
   let params = [req.params.id, req.body.content, req.body.created];
-  // DEBUG
-  console.log("SQL Statement Parameters: ", params);
+  // // DEBUG
+  // console.log("SQL Statement Parameters: ", params);
   // Send the SQL query with the paramters
   pool.query(sql, params).then((result) => {
-    // DEBUG
-    console.log("Database Response: ");
-    console.log(result.rows);
+    // // DEBUG
+    // console.log("Database Response: ");
+    // console.log(result.rows);
     // Send the copied back resulting database entry with a status code of 201 
     res.status(201);
     res.json(result.rows[0]);
