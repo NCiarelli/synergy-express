@@ -203,6 +203,7 @@ routes.post("/employees/:id/survey-entries", (req, res) => {
 // DELETE /employees/:id/survey-entries endpoint
 // Delete all survey entries associated with an employee
 
+
 // TEAM TABLE ENDPOINTS
 
 // GET /teams Endpoint
@@ -212,7 +213,30 @@ routes.post("/employees/:id/survey-entries", (req, res) => {
 // Get a team's info by name
 
 // POST /teams Endpoint
-// Save a team to the database
+// Save a team to the database, data is in the request body as JSON
+routes.post("/teams", (req, res) => {
+  // // DEBUG
+  // console.log("POST /teams endpoint");
+  // console.log("Request Body Data: ", req.body);
+  // Make the SQL statement, in this case the members ids is an araay field for SQL which node-pg does not supoort as an input parameter, so it needs to be constructed by our code
+  const sql = "INSERT INTO teams (team_name, member_ids, team_type) VALUES ($1::TEXT, '{" + req.body.memberIds.join(',') + "}', $2::TEXT) RETURNING *;";
+  // Setup the params to add the new team entry
+  let params = [req.body.name, req.body.teamType];
+  // // DEBUG
+  // console.log("SQL Statement Parameters: ", params);
+  // Send the SQL query with the paramters
+  pool.query(sql, params).then((result) => {
+    // // DEBUG
+    // console.log("Database Response: ");
+    // console.log(result.rows);
+    // Send the copied back resulting database entry with a status code of 201 
+    res.status(201);
+    res.json(result.rows[0]);
+  }, (err) => {
+    console.log("Database Query Error: ");
+    console.log(err);
+  });
+});
 
 // PUT /teams/:id Endpoint
 // Edit a team's info/notes
