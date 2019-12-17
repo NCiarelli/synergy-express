@@ -255,7 +255,27 @@ routes.post("/teams", (req, res) => {
 });
 
 // PUT /teams/:id Endpoint
-// Edit a team's info/notes
+// Edit a team's info
+
+// PUT /teams/:id/notes Endpoint
+// Edit a team's notes
+routes.put("/teams/:id/notes", (req, res) => {
+  // // DEBUG
+  // console.log("PUT /teams/:id/notes endpoint");
+  // console.log("Request URL Parameters: ", req.params, "Request Body Data: ", req.body);
+  // Make the SQL statement
+  const sql = "UPDATE teams SET notes=$1::TEXT WHERE id=$2::INT RETURNING *;";
+  // Setup the params to update the  new personality profile and dominant personality, with the targeted employee's id
+  let params = [req.body.notes, req.params.id];
+  // Send the SQL query with the paramters
+  pool.query(sql, params).then((result) => {
+    // // DEBUG
+    // console.log("Database Response: ");
+    // console.log(result.rows);
+    // Send the copied back resulting database entry
+    res.json(result.rows[0]);
+  });
+});
 
 // DELETE /teams/:id Enpoint
 // Delete a team from the database
