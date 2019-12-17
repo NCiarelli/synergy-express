@@ -208,6 +208,22 @@ routes.post("/employees/:id/survey-entries", (req, res) => {
 
 // GET /teams Endpoint
 // Get all saved teams' info
+routes.get("/teams", (req, res) => {
+  // // DEBUG
+  // console.log("GET /teams endpoint");
+  // console.log("Request URL Parameters: ", req.params, "Request Body Data: ", req.body);
+  // Make the SQL statement
+  const sql = "SELECT * FROM teams ORDER BY id;";
+  // Send the SQL query
+  pool.query(sql).then(result => {
+    // // DEBUG
+    // console.log("Database Response: ");
+    // console.log(result.rows);
+    // Send the result back
+    res.json(result.rows);
+  });
+});
+
 
 // GET /teams/:name Endpoint
 // Get a team's info by name
