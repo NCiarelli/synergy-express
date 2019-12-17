@@ -107,12 +107,6 @@ routes.post("/employees", (req, res) => {
   });
 });
 
-// PUT /employees/:id/update-all endpoint
-// Update an employees data with all changes
-// routes.put("/employees/update-all/:id", (req, res) => {
-//   pool.query("UPDATE employees SET name=$1::TEXT")
-// });
-
 // PUT /employees/:id/personality-profile endpoint
 // Update the personality profile and dominant personality of an employee
 routes.put("/employees/:id/personality-profile", (req, res) => {
@@ -133,6 +127,8 @@ routes.put("/employees/:id/personality-profile", (req, res) => {
   });
 });
 
+// DELETE /employees/:id
+// Delete an employee from the database, includes deleting survey entries from the other table
 
 // SURVEY ENTRIES ENDPOINTS
 
@@ -182,5 +178,23 @@ routes.post("/employees/:id/survey-entries", (req, res) => {
   });
 });
 
+// DELETE /employees/:id/survey-entries endpoint
+// Delete all survey entries associated with an employee
 
+// TEAM TABLE ENDPOINTS
+
+// GET /teams Endpoint
+// Get all saved teams' info
+
+// GET /teams/:name Endpoint
+// Get a team's info by name
+
+// POST /teams Endpoint
+// Save a team to the database
+
+// PUT /teams/:id Endpoint
+// Edit a team's info/notes
+
+// DELETE /teams/:id Enpoint
+// Delete a team from the database
 module.exports = routes;
